@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+
+        <!-- http://getbootstrap.com/docs/4.5/ -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <link href="/static/favicon.ico" rel="icon">
+        <link href="/static/styles.css" rel="stylesheet">
+
+        <!-- http://getbootstrap.com/docs/4.5/ -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+        <title>CS50 Recycle: Homepage</title>
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-md navbar-dark border">
+            <a class="navbar-brand" href="/"><span>CS50 Recycle</span></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if session.user_id %}
+                    <ul class="navbar-nav mr-auto mt-2">
+                        <li class="nav-item"><a class="nav-link" href="/awareness">Awareness</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto mt-2">
+                        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav ml-auto mt-2">
+                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+        </nav>
+
+        {% if get_flashed_messages() %}
+            <header>
+                <div class="alert alert-primary border text-center" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            </header>
+        {% endif %}
+
+        <main class="container p-5">
+            {% block main %}{% endblock %}
+        </main>
+
+        <div id="map"></div>
+        <script>
+            var markers = [
+    {
+        "title": '1.Germany - 66.1%',
+        "lat": '51.1657',
+        "lng": '10.4515',
+        "description": 'Germany leads the way with 66.1% of its waste being recycled. It has six different bins: black for general waste, blue for paper, yellow for plastic, white for clear glass, green for coloured glass and brown for composting. This means that citizens must do the sorting themselves, which reduces the amount of money the government has to spend on sorting, as well as reducing contamination. German law makes companies responsible for making their packaging reusable or recyclable, operating under a ‘polluter pays’ principle, and all recyclable items are marked with a recognisable green dot.'
+    },
+    {
+        "title": '6.Austria - 55.9%',
+        "lat": '47.5162',
+        "lng": '14.5501',
+        "description": 'Trash is hard to find in Vienna, Austria’s super-clean capital city. The government has several initiatives – encouraging citizens to use reusable coffee cups, reduce food waste and use reusable diapers – to help people cut down on waste. Vienna is also home to three waste incineration plants, which deal with any waste that can’t be recycled. Pfaffenau, a waste-to-energy facility located six miles from the city centre, produces enough heat to warm 50,000 homes each year and enough electricity to power 25,000 homes.'
+    },
+    {
+        "title": '3.South Korea - 59%',
+        "lat": '35.9078',
+        "lng": '127.7669',
+        "description": 'South Korea is another country that’s turned its recycling reputation around – particularly when it comes to food waste. Back in 1995, a mere 2% of food waste was recycled, while today that figure has risen to 95% according to a study published in the Journal of Material Cycles and Waste Management. Since 2013, Seoul residents have been legally required to dispose of food waste in biodegradable bags. They are charged a small fee for the bags, which is intended to discourage food wastage, and the fees pay for the cost of collecting and processing the city’s waste. Pictured are food waste bins in Seoul.'
+    },
+    {
+        "title": '9.Switzerland - 52.7%',
+        "lat": '56.2639',
+        "lng": '9.5018',
+        "description": 'Switzerland has long been ahead of the curve when it comes to recycling. In the 1990s, it introduced the ‘polluter pays’ principle, where people are taxed on rubbish bags in order to incentivise recycling. The scheme was hugely effective, doubling the recycling rate in 20 years. It’s also one of the world-leading countries for glass bottle recycling, with 96% being recycled according to the European Container Glass Federation (FEVE) – well above the EU average of 73%.'
+    },
+    {
+        "title": '10.Danmark - 46.3%',
+        "lat": '46.8182',
+        "lng": '8.2275',
+        "description": 'Almost half of Denmark’s waste is recycled, with leftover rubbish being sent to incinerator plants, where it’s burned and used to heat homes. In October, a new incinerator opened in Copenhagen – with a difference. CopenHill (pictured), is essentially a super-clean waste-to-energy plant that can convert 440,000 tons of waste into clean energy every year. The site serves the unexpected dual purpose of being a ski slope and activity centre for the city’s residents to enjoy. '
+    },
+    {
+        "title": '5.Netherlands - 56.6%',
+        "lat": '52.1326',
+        "lng": '5.2913',
+        "description": 'The Netherlands has a few key initiatives to thank for its high recycling rates. In Amsterdam, the Wasted scheme rewards citizens that recycle plastic with tokens, which can be redeemed for discounts at local shops and businesses. Meanwhile, innovative companies are coming up with new ways to recycle. Dutch company EverUse recycles paper and turns it into insulation materials for housing. Pictured is Dutch King Willem-Alexander carrying out the official opening of the EverUse factory in Sneek, in January 2018.'
+    },
+    {
+        "title": '2.Singapore - 61%',
+        "lat": '1.3521',
+        "lng": '103.8198',
+        "description": 'Singapore’s high recycling rates owe more to informal recyclers – known as karung guni (pictured) – than they do to the government’s National Recycling Programme. The karung guni collected around 20% of all household recyclable waste in 2016, while the national recycling effort collected just 2%. These informal collectors visit households and pick up all types of recyclable waste, including electronics, which they sell on to dealers and recycling companies.'
+    },
+    {
+        "title": '4.Taiwan - 58%',
+        "lat": '23.6978',
+        "lng": '120.9605',
+        "description": 'Tawian has an offbeat way of encouraging people to recycle – its garbage collection trucks blast classical music to remind people to bring their bins out. But it’s clearly working. In 1993, virtually nothing was recycled and only 70% of overall trash was collected, lending it the nickname of "Garbage Island". Today, the country reports an impressive 58% recycling rate. Other initiatives that have helped include composting of raw food waste, which is turned into fertiliser, and fines for not disposing of waste correctly.'
+    },
+    {
+        "title": '8.Belgium - 53.5%',
+        "lat": '50.5039',
+        "lng": '4.4699',
+        "description": 'Belgium is one of the leading recyclers in Europe, with the Flanders region being one of Europe’s recycling hubs. Flanders’ Materials Program, launched in 2012, helps companies to use sustainable design and state-of-the-art recycling, and won an award at the World Economic Forum in 2016. Belgium recycled almost 10 million light bulbs last year, thanks to non-profit organisation Recupel, which collects e-scrap and lightbulbs to be turned into new electronics.'
+    },
+    {
+        "title": '7.Slovenia - 53.9%',
+        "lat": '46.1512',
+        "lng": '14.9955',
+        "description": 'It may be small, with a population of just over 2 million, but Slovenia is streets ahead of many larger countries when it comes to recycling. In its capital, Ljubljana, the state-of-the-art Ljubljana Regional Waste Management Centre (RCERO) (pictured) handles more than 170,000 tonnes of rubbish each year. With the majority of waste that’s sent there getting recycled, turned into biofuel or composted, only 4.9% of waste sent to the plant ends up in landfill.'
+    }
+    ];
+    window.onload = function () {
+        LoadMap();
+    }
+    function LoadMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng({lat:38.58100, lng:12.5347}),
+            zoom: 3,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+        //Create and open InfoWindow.
+        var infoWindow = new google.maps.InfoWindow();
+
+        for (var i = 0; i < markers.length; i++) {
+            var data = markers[i];
+            var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: data.title,
+                icon: 'static/pin.png',
+            });
+
+            //Attach click event to the marker.
+            (function (marker, data) {
+                google.maps.event.addListener(marker, "click", function (e) {
+                    //Wrap the content inside an HTML DIV in order to set height and width of InfoWindow.
+                    infoWindow.setContent("<div style = 'width:250px;min-height:80px'>" + data.description + "</div>");
+                    infoWindow.open(map, marker);
+                });
+            })(marker, data);
+        }
+    }
+      	</script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtIqivUfAsRQ83rE8sapMvYOW6oOxCqe8&callback=initMap&v=weekly"
+        async defer ></script>
+    </body>
+
+</html>
